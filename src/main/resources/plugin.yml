@@ -1,0 +1,12 @@
+main: Main.Main
+name: MultiChat
+version: 1.0.0
+author: ResurrectAjax
+description: Advanced Chat Plugin
+api-version: 1.18
+
+commands:
+  MultiChat:
+    description: run a MultiChat command
+    usage: /<command>
+    aliases: mc

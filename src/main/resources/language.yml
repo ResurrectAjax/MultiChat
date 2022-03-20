@@ -1,0 +1,10 @@
+Command:
+  Error:
+    ByConsole:
+      Message: '&bMultiChat &8: &eThat command has to be executed by a player.'
+    NotExist:
+      Message: '&bMultiChat &8: &eThat command doesn''t exist.'
+    BadSyntax:
+      Message: '&bMultiChat &8: &ePlease do %Syntax% instead.'
+    NoPermission:
+      Message: '&bMultiChat &8: &eYou don''t have permission to execute this command.'

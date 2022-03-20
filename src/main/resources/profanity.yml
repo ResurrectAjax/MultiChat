@@ -1,0 +1,27 @@
+# This YML contains words that need to be censored if censoring is enabled
+#
+# Full-Words: words that might be profanity if nothing else is added, for example: association -> contains 'ass' but is not profanity
+# Words-Containing: words that are profanity no matter if anything gets added or not for example: shit -> cannot be seen as anything but profanity
+#
+Banned-Words:
+  Full-Words:
+  - arse
+  - ass
+  Words-Containing:
+  - asshole
+  - bastard
+  - bollocks
+  - bugger
+  - bitch
+  - shit
+  - cock
+  - crap
+  - cunt
+  - damn
+  - fuck
+  - hell
+  - nigga
+  - nigger
+  - piss
+  - prick
+  - whore
