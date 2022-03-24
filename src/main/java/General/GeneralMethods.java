@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
@@ -32,11 +33,6 @@ import net.md_5.bungee.api.chat.hover.content.Text;
  * @author ResurrectAjax
  * */
 public class GeneralMethods {
-	
-	private Main main;
-	public GeneralMethods(Main main) {
-		this.main = main;
-	}
 	
 	/**
 	 * turn text into hover text
@@ -60,9 +56,9 @@ public class GeneralMethods {
 	}
 		
 	/**
-	 * check if a string is a valid date
-	 * @param date String to check
-	 * @return boolean
+	 * check if a {@link String} is a valid date
+	 * @param date {@link String} to check
+	 * @return {@link Boolean} isValid
 	 * */
 	public boolean isValidDate(String date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -76,9 +72,9 @@ public class GeneralMethods {
 	}
 	
 	/**
-	 * check if string is an Integer
-	 * @param input String to check
-	 * @return boolean
+	 * check if {@link String} is an Integer
+	 * @param input {@link String} to check
+	 * @return {@link Boolean} isInteger
 	 * */
 	public static boolean isInteger(String input) {
 		try {
@@ -91,9 +87,9 @@ public class GeneralMethods {
 	}
 	
 	/**
-	 * gets all numeric values from String
-	 * @param input String to retreive values from
-	 * @return array of Integer values
+	 * gets all numeric values from {@link String}
+	 * @param input {@link String} to retreive values from
+	 * @return array of {@link Integer} values
 	 * */
 	public static Integer[] getIntFromString(String input) {
 		String nStr = ChatColor.stripColor(input);
@@ -107,7 +103,7 @@ public class GeneralMethods {
 	
 	/**
 	 * replaces the color coded text with a colored text
-	 * @param msg String to format
+	 * @param msg {@link String} to format
 	 * @return colored text
 	 * */
 	public static String format(String msg) {
@@ -116,10 +112,10 @@ public class GeneralMethods {
 	
 	/**
 	 * replaces text with special strings (%Player%, %Date%) with correct values
-	 * @param input String to convert
-	 * @param special special charactered String
-	 * @param value String to replace value with
-	 * @return formatted String
+	 * @param input {@link String} to convert
+	 * @param special special charactered {@link String}
+	 * @param value {@link String} to replace value with
+	 * @return formatted {@link String}
 	 * */
  	public static String format(String input, String special, String value) {
  		String newStr = input;
@@ -129,6 +125,9 @@ public class GeneralMethods {
  		return ChatColor.translateAlternateColorCodes('&', newStr);
 	}
  	
+ 	/**
+ 	 * {@link List} for formatted {@link String}s
+ 	 * */
  	public static List<String> FORMATS = new ArrayList<String>(Arrays.asList(
  			"%Player%",
 			"%Date%",
@@ -137,10 +136,9 @@ public class GeneralMethods {
  			));
 	/**
 	 * replaces text with special strings (%Player%, %Date%) with correct values
-	 * @param input String to convert
-	 * @param special special charactered String
-	 * @param value String to replace value with
-	 * @return formatted String
+	 * @param input {@link String} to convert
+	 * @param value {@link String} to replace value with
+	 * @return formatted {@link String}
 	 * */
  	public static String format(String input, String value) {
  		String newStr = input;
@@ -153,11 +151,20 @@ public class GeneralMethods {
 	}
  	
  	/**
+ 	 * Get the bad syntax message of syntax
+ 	 * @param syntax {@link String} syntax
+ 	 * @return {@link String} formatted syntax message
+ 	 * */
+ 	public static String getBadSyntaxMessage(String syntax) {
+ 		return GeneralMethods.format(Main.getInstance().getLanguage().getString("Command.Error.BadSyntax.Message"), "%Syntax%", syntax);
+ 	}
+ 	
+ 	/**
  	 * checks if a location is within the bounds of 2 other locations
- 	 * @param loc location to check
+ 	 * @param loc {@link Location} to check
  	 * @param bound1 first bound
  	 * @param bound2 second bound
- 	 * @return boolean
+ 	 * @return {@link Boolean} isInBounds
  	 * */
  	public boolean isInBounds(Location loc, Location bound1, Location bound2) {
 		
@@ -191,9 +198,9 @@ public class GeneralMethods {
  	}
  	
  	/**
- 	 * gets a list of all the PotionEffects specified in a configuration section
- 	 * @param section ConfigurationSection where PotionEffects are listed
- 	 * @return list of PotionEffects
+ 	 * gets a list of all the {@link PotionEffect}s specified in a configuration section
+ 	 * @param section {@link ConfigurationSection} where {@link PotionEffect}s are listed
+ 	 * @return {@link List} of {@link PotionEffect}
  	 * */
  	public List<PotionEffect> getPotionEffects(ConfigurationSection section) {
 		List<PotionEffect> potionEffects = new ArrayList<PotionEffect>();
@@ -208,8 +215,8 @@ public class GeneralMethods {
 	}
  	
  	/**
- 	 * converts a string in format(hh:mm:ss) to seconds
- 	 * @param input String entered in format to convert
+ 	 * converts a {@link String} in format(hh:mm:ss) to seconds
+ 	 * @param input {@link String} entered in format to convert
  	 * @return int total in seconds
  	 * */
  	public static int convertHoursMinutesSecondsToSeconds(String input) {
@@ -244,11 +251,11 @@ public class GeneralMethods {
 	}
  	
  	/**
- 	 * gets the head of a player as an ItemStack
- 	 * @param uuid players Unique User ID
- 	 * @param displayName String that will be the ItemStacks display name
- 	 * @param lore lore list
- 	 * @return ItemStack playerhead
+ 	 * gets the head of a {@link Player} as an ItemStack
+ 	 * @param uuid {@link UUID} of the {@link Player}
+ 	 * @param displayName {@link String} that will be the {@link ItemStack}s display name
+ 	 * @param lore lore {@link List}
+ 	 * @return {@link ItemStack} playerhead
  	 * */
  	public static ItemStack getPlayerHead(UUID uuid, String displayName, List<String> lore) {
 		boolean isNewVersion = Arrays.stream(Material.values())
@@ -270,10 +277,10 @@ public class GeneralMethods {
 	}
 	
  	/**
- 	 * gets the head of a player as an ItemStack, can only be used for page monitoring in gui's
+ 	 * gets the head of a player as an {@link ItemStack}, can only be used for page monitoring in gui's
  	 * @param name the name of the head you want('MHF_ArrowLeft' and 'MHF_ArrowRight')
  	 * @param page page number as an int
- 	 * @return ItemStack playerhead
+ 	 * @return {@link ItemStack} playerhead
  	 * */
 	public static ItemStack getPlayerHead(String name, int page) {
 		boolean isNewVersion = Arrays.stream(Material.values())

@@ -10,14 +10,23 @@ import java.util.logging.Level;
 
 import Main.Main;
 
+/**
+ * Class for creating tables and creating the database connection
+ * 
+ * @author ResurrectAjax
+ * */
 public class MysqlMain extends Database{
 	
 	private Main plugin = Main.getPlugin(Main.class);
 	
-	String dbname;
+	private String dbname;
+	/**
+	 * Constructor<br>
+	 * @param instance instance of the {@link Main.Main} class
+	 * */
     public MysqlMain(Main instance){
         super(instance);
-        dbname = plugin.getConfig().getString("SQLite.Example", "Example"); // Set the database name here e.g player_kills
+        dbname = plugin.getConfig().getString("SQLite.MultiChat", "MultiChat"); // Set the database name here e.g player_kills
     }
 	
     /* EXAMPLES
@@ -71,14 +80,10 @@ public class MysqlMain extends Database{
     private String SQLiteCreateItemsTable = 
     		"create table if not exists Users("
     		+ "UUID varchar(32) PRIMARY KEY, "
-    		+ "blockID int not null, "
-    		+ "itemType varchar(32), "
-    		+ "name varchar(32), "
-    		+ "lore text, "
-    		+ "enchantments text, "
-    		+ "amount int not null, "
-    		+ "foreign key(blockID) references Blocks(blockID) on delete cascade"
+    		+ "channel varchar(32) not null,"
+    		+ "profanityFilter boolean not null"
     		+ ");";
+    
     
 	@Override
 	public Connection getSQLConnection() {

@@ -1,9 +1,11 @@
 MultiChat:
   # The channels players can choose from
-  # worlds: defines which worlds can receive messages: ALL/OWN -> (All worlds)/(The world you're currently in)
-  # radius: defines in which block radius players can receive messages: -1 for everywhere
+  # worlds defines which worlds can receive messages: ALL/OWN (All worlds) or (The world you're currently in)
+  # radius defines in which block radius players can receive messages (-1 for everywhere)
+  # default defines the default channel players use
   Channels:
     global:
+      default: true
       worlds: ALL
       radius: -1
     local:

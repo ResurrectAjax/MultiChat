@@ -1,24 +1,30 @@
 package Main;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.Yaml;
 
 import General.GeneralMethods;
-import Interfaces.CommandInterface;
+import Interfaces.ParentCommand;
+import Listeners.ChatListener;
+import Listeners.JoinListener;
 import Managers.CommandManager;
+import Managers.ConfigManager;
 import Managers.FileManager;
+import Persistency.UserMapping;
 import SQL.Database;
 import SQL.MysqlMain;
 
+/**
+ * Main class
+ * 
+ * @author ResurrectAjax
+ * */
 public class Main extends JavaPlugin{
 	private static Main INSTANCE;
 	
@@ -27,63 +33,56 @@ public class Main extends JavaPlugin{
 	private FileManager fileManager;
 	private FileConfiguration config, language, profanity;
 	
+	private UserMapping userMapping;
+	
+	/**
+	 * Static method to get the {@link Main} instance
+	 * @return {@link Main} instance
+	 * */
 	public static Main getInstance() {
 		return INSTANCE;
 	}
 	
+	/**
+	 * Enable plugin and load files/commands
+	 * */
 	public void onEnable() {
-		saveDefaultConfig();
 		
 		loadFiles();
 		loadListeners();
-	}
-	
-	private void loadListeners() {
 		
+		
+		TabCompletion tabCompleter = new TabCompletion(this);
+		//set the tabCompleter
+		for(ParentCommand command : commandManager.getCommands()) {
+			getCommand(command.getName()).setTabCompleter(tabCompleter);
+		}
 	}
 	
+	/**
+	 * Load all the classes that implement {@link Listener}
+	 * */
+	private void loadListeners() {
+		getServer().getPluginManager().registerEvents(new JoinListener(this), this);
+		getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+	}
+	
+	/**
+	 * Handle command execution
+	 * @param sender {@link CommandSender} who sent the command
+	 * @param cmd {@link Command} sent command
+	 * @param label {@link String} label of the command
+	 * @param args {@link String}[] arguments
+	 * */
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(sender instanceof Player) {
 			Player player = (Player)sender;
 			
 			//check all the base commands in this plugin
-			for(CommandInterface command : commandManager.getCommands()) {
-				if(!label.equalsIgnoreCase(command.getName())) continue;
-				//check if base command has arguments
-				if(command.getArguments(player.getUniqueId()) != null) {
-					switch(args.length) {
-						case 0:
-						case 1:
-							//run command if the player entered 1 argument
-							command.perform(player, args);
-							break;
-						case 2:
-						case 3:
-							//check if command has subcommands
-							if(command.getSubCommands() == null) command.perform(player, args);									
-							else {
-								for(CommandInterface subcommands : command.getSubCommands()) {
-									for(int i = 0; i < args.length; i++) {
-										//check if player entered the right arguments for specific subcommand
-										if(!subcommands.getName().equalsIgnoreCase(args[i])) continue;
-										if(subcommands.getPermissionNode() != null && !player.hasPermission(subcommands.getPermissionNode())) 
-											player.sendMessage(GeneralMethods.format(language.getString("Command.Error.NoPermission.Message")));
-										subcommands.perform(player, args);
-									}
-								}	
-							}
-							break;
-						default:
-							player.sendMessage(GeneralMethods.format(language.getString("Command.Error.NotExist.Message")));
-							break;
-					}
-				}
-				else {
-					if(command.getPermissionNode() != null && !player.hasPermission(command.getPermissionNode())) continue;
-					command.perform(player, args);
-				}
-				
+			if(commandManager.getCommandByName(cmd.getName()) != null) {
+				ParentCommand command = commandManager.getCommandByName(cmd.getName());
+				runCommand(command, player, args);
 			}
 		}
 		else {
@@ -92,58 +91,131 @@ public class Main extends JavaPlugin{
 		return true;
 	}
 	
+	/**
+	 * Iterate over all commands and subcommands to find the right command to execute
+	 * @param command {@link ParentCommand} where the method runs from
+	 * @param player {@link Player} who sent the command
+	 * @param args {@link String}[] arguments given with the command
+	 * */
+	private void runCommand(ParentCommand command, Player player, String[] args) {
+		for(String arg : args) {
+			String permissionNode = command.getPermissionNode();
+			String noPermission = GeneralMethods.format(language.getString("Command.Error.NoPermission.Message"));
+			
+			if(permissionNode != null && !player.hasPermission(permissionNode)) {
+				player.sendMessage(noPermission);
+				return;
+			}
+			if(command.getSubCommands() == null || command.getSubCommands().isEmpty()) {
+				command.perform(player, args);
+				return;
+			}
+			
+			for(ParentCommand subcommand : command.getSubCommands()) {
+				if(subcommand.getName().equalsIgnoreCase(arg)) {
+					runCommand(subcommand, player, args);
+					return;
+				}
+			}
+		}
+		command.perform(player, args);
+	}
+	
+	/**
+	 * Get the command manager
+	 * @return {@link CommandManager} manager
+	 * */
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}
 
+	/**
+	 * Get the file manager
+	 * @return {@link FileManager} manager
+	 * */
 	public FileManager getFileManager() {
 		return fileManager;
 	}
 
+	/**
+	 * Get the config file
+	 * @return {@link FileConfiguration} config
+	 * */
 	public FileConfiguration getConfig() {
 		return config;
 	}
 
+	/**
+	 * Get the language file
+	 * @return {@link FileConfiguration} language
+	 * */
 	public FileConfiguration getLanguage() {
 		return language;
 	}
 	
+	/**
+	 * Get the profanity file
+	 * @return {@link FileConfiguration} profanity
+	 * */
 	public FileConfiguration getProfanityConfig() {
 		return profanity;
 	}
 	
+	/**
+	 * Get the database
+	 * @return {@link Database} database
+	 * */
 	public Database getDatabase() {
 		return db;
 	}
+
+	/**
+	 * Get the user mapping
+	 * @return {@link UserMapping} mapping
+	 * */
+	public UserMapping getUserMapping() {
+		return userMapping;
+	}
 	
+	/**
+	 * Reload the {@link Yaml} files
+	 * */
 	public void reload() {
-    	List<File> fileList = new ArrayList<File>(Arrays.asList(
-    			new File(this.getDataFolder(), "config.yml"),
-    			new File(this.getDataFolder(), "language.yml"),
-    			new File(this.getDataFolder(), "profanity.yml")
-    			));
-    	
-    	for(int i = 0; i < fileList.size(); i++) {
-        	fileManager.unloadConfig(fileList.get(i));
-        	
-    	}
-    	
-        config = this.getFileManager().getConfig(fileList.get(0)).getFileConfiguration();
-        language = this.getFileManager().getConfig(fileList.get(1)).getFileConfiguration();
-        profanity = this.getFileManager().getConfig(fileList.get(2)).getFileConfiguration();
+        fileManager.loadFiles();
+        config = fileManager.getConfig("config.yml");
+        language = fileManager.getConfig("language.yml");
+        profanity = fileManager.getConfig("profanity.yml");
+        
+        for(Player player : Bukkit.getOnlinePlayers()) {
+        	String userChannel = userMapping.getChannel(player.getUniqueId());
+    		if(userChannel != null && ConfigManager.getChannelNames().contains(userChannel)) continue;
+			userMapping.setUser(player.getUniqueId(), ConfigManager.getDefaultChannel().toLowerCase(), true);
+        }
     }
 
+	/**
+	 * Load the {@link Yaml} files and classes
+	 * */
 	private void loadFiles() {
+		INSTANCE = this;
+		
+		//load files
+		fileManager = new FileManager(this);
+        fileManager.loadFiles();
+        config = fileManager.getConfig("config.yml");
+        language = fileManager.getConfig("language.yml");
+        profanity = fileManager.getConfig("profanity.yml");
+        //files
+        
 		//load database
 		this.db = new MysqlMain(this);
 		this.db.load();
 		//database
 		
-		fileManager = new FileManager(this);
-        config = fileManager.getConfig(new File(this.getDataFolder(), "config.yml")).getFileConfiguration();
-        language = fileManager.getConfig(new File(this.getDataFolder(), "language.yml")).getFileConfiguration();
-        profanity = fileManager.getConfig(new File(this.getDataFolder(), "profanity.yml")).getFileConfiguration();
+		userMapping = new UserMapping(this.db);
 		
+		//load classes
 		commandManager = new CommandManager(this);
+		//classes
 	}
 }

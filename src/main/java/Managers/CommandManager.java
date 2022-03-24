@@ -4,43 +4,43 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import Commands.SummonPet;
-import Interfaces.CommandInterface;
+import Commands.MultiChatCommand;
+import Interfaces.ParentCommand;
 import Main.Main;
 /**
  * Manages all the base commands
  * @author ResurrectAjax
  * */
 public class CommandManager {
-	private List<CommandInterface> commands = new ArrayList<CommandInterface>();
+	private List<ParentCommand> commands = new ArrayList<ParentCommand>();
 	
 	/**
-	 * Constructor of CommandManager<br>
+	 * Constructor of {@link CommandManager}<br>
 	 * Loads all the base commands
-	 * @param main instance of the {@link me.ResurrectAjax.Main.Main} class
+	 * @param main instance of the {@link Main.Main} class
 	 * */
 	public CommandManager(Main main) {
-		commands = new ArrayList<CommandInterface>(Arrays.asList(
-				new SummonPet(main)
+		commands = new ArrayList<ParentCommand>(Arrays.asList(
+				new MultiChatCommand(main)
 				));
 	}
 	
 	/**
-	 * Gets a list of all the base commands
-	 * @return list of all the base commands
+	 * Gets a {@link List} of all the base commands
+	 * @return {@link List} of all the base commands
 	 * */
-	public List<CommandInterface> getCommands() {
+	public List<ParentCommand> getCommands() {
 		return commands;
 	}
 	
 	/**
-	 * Gets a list of all the base command names
-	 * @return list of all the command names
+	 * Gets a {@link List} of all the base command names
+	 * @return {@link List} of all the command names
 	 * */
 	public List<String> getStringList() {
 		List<String> commandStrings = new ArrayList<String>();
-		for(CommandInterface command : commands) {
-			commandStrings.add(command.getName());
+		for(ParentCommand command : commands) {
+			commandStrings.add(command.getName().toLowerCase());
 		}
 		return commandStrings;
 	}
@@ -48,11 +48,10 @@ public class CommandManager {
 	/**
 	 * Gets the base command by name
 	 * @param name name of the command
-	 * @return instance of {@link me.ResurrectAjax.Commands.Managers.CommandInterface}
+	 * @return instance of {@link ParentCommand}
 	 * */
-	public CommandInterface getCommandByName(String name) {
-
-		for(CommandInterface command : commands) {
+	public ParentCommand getCommandByName(String name) {
+		for(ParentCommand command : commands) {
 			if(getStringList().contains(name.toLowerCase())) {
 				if(command.getName().equalsIgnoreCase(name)) {
 					return command;
@@ -60,7 +59,7 @@ public class CommandManager {
 			}
 			else {
 				if(command.getSubCommands() != null) {
-					for(CommandInterface subcommands : command.getSubCommands()) {
+					for(ParentCommand subcommands : command.getSubCommands()) {
 						if(subcommands.getName().equalsIgnoreCase(name)) {
 							return subcommands;
 						}

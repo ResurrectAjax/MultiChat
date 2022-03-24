@@ -1,80 +1,100 @@
 package Commands;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import Interfaces.CommandInterface;
+import General.GeneralMethods;
+import Interfaces.ChildCommand;
+import Interfaces.ParentCommand;
 import Main.Main;
+import Managers.ConfigManager;
+import Persistency.UserMapping;
 
-public class Channel extends CommandInterface{
+/**
+ * Class for handling the channel command
+ * 
+ * @author ResurrectAjax
+ * */
+public class Channel extends ChildCommand{
 	
-	private ArrayList<CommandInterface> subcommands = new ArrayList<CommandInterface>(Arrays.asList(
-			
-			));
+	protected Main main;
 	
-	private Main main;
+	/**
+	 * Constructor<br>
+	 * @param main instance of the {@link Main.Main} class
+	 * */
 	public Channel(Main main) {
 		this.main = main;
 	}
 	
-	@Override
 	public String getPermissionNode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
 		return "channel";
 	}
 
-	@Override
 	public String getSyntax() {
 		// TODO Auto-generated method stub
 		return "/multichat channel <channel>";
 	}
 
-	@Override
 	public String getDescription() {
 		// TODO Auto-generated method stub
 		return "Switch to a different channel";
 	}
 
-	@Override
 	public String[] getArguments(UUID uuid) {
-		FileConfiguration config = main.getConfig();
-		
-		ConfigurationSection section = config.getConfigurationSection("MultiChat.Channels");
-		String[] args = new String[section.getKeys(false).size() + getSubCommands().size()];
+		String[] args = new String[ConfigManager.getChannelNames().size()];
 		
 		int countChannels = 0;
-		for(String channel : section.getKeys(false)) {
-			args[countChannels] = channel;
+		for(String channel : ConfigManager.getChannelNames()) {
+			args[countChannels] = channel.toLowerCase();
 			countChannels++;
-		}
-		for(int i = section.getKeys(false).size(); i < args.length; i++) {
-			args[i] = getSubCommands().get(i).getName();
 		}
 		return args;
 	}
 
-	@Override
-	public List<CommandInterface> getSubCommands() {
+	public List<ParentCommand> getSubCommands() {
 		// TODO Auto-generated method stub
-		return subcommands;
+		return null;
 	}
 
-	@Override
 	public void perform(Player player, String[] args) {
-		// TODO Auto-generated method stub
+		FileConfiguration lang = main.getLanguage();
+		if(args.length != 2) {
+			player.sendMessage(GeneralMethods.getBadSyntaxMessage(getSyntax()));
+			return;
+		}
+		if(!checkChannel(player, args[1].toLowerCase())) return;
 		
+		UserMapping userMapping = main.getUserMapping();
+		boolean profanityFilter = userMapping.getFilter(player.getUniqueId());
+		
+		userMapping.setUser(player.getUniqueId(), args[1].toLowerCase(), profanityFilter);
+		player.sendMessage(GeneralMethods.format(lang.getString("Command.Channel.ChangedChannel.Message"), "%Channel%", args[1].toLowerCase()));
+		
+	}
+	
+	/**
+	 * Check if the given channel name exists
+	 * @param player {@link Player} who sends command
+	 * @param channel {@link String} to check
+	 * */
+	protected boolean checkChannel(Player player, String channel) {
+		FileConfiguration lang = main.getLanguage();
+		if(!Arrays.asList(getArguments(player.getUniqueId())).contains(channel.toLowerCase())) {
+			player.sendMessage(GeneralMethods.format(lang.getString("Command.Channel.NotExist.Message"), "%Channel%", channel.toLowerCase()));
+			return false;
+		}
+		return true;
 	}
 
 }
