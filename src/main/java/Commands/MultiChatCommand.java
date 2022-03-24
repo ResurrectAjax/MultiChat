@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import Commands.Admin.AdminCommand;
+import Help.HelpCommand;
 import Interfaces.ParentCommand;
 import Main.Main;
 
@@ -24,7 +25,8 @@ public class MultiChatCommand extends ParentCommand{
 		subcommands = new ArrayList<ParentCommand>(Arrays.asList(
 				new Channel(main),
 				new Profanity(main),
-				new AdminCommand(main)
+				new AdminCommand(main),
+				new HelpCommand(main)
 				));
 	}
 	

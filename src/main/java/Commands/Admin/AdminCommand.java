@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import Help.HelpCommand;
 import Interfaces.ParentCommand;
 import Main.Main;
 
@@ -25,7 +26,8 @@ public class AdminCommand extends ParentCommand{
 				new Reload(main),
 				new SetChannelRadius(main),
 				new SetChannelWorld(main),
-				new SetDefaultChannel(main)
+				new SetDefaultChannel(main),
+				new HelpCommand(main)
 				));
 	}
 	

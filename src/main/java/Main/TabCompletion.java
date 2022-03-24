@@ -29,6 +29,14 @@ public class TabCompletion implements TabCompleter{
 		commandManager = main.getCommandManager();
 	}
 	
+	/**
+	 * Code run when player uses tab completion
+	 * 
+	 * @param sender {@link CommandSender} who sent the command
+	 * @param command {@link Command} sent by sender
+	 * @param alias {@link String} command alias
+	 * @param args {@link String}[] arguments
+	 * */
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		
@@ -62,7 +70,7 @@ public class TabCompletion implements TabCompleter{
 		for(ParentCommand subcommand : command.getSubCommands()) {
 			if(subcommand.getArguments(uuid) == null) continue;
 			if(subcommand.getName().equalsIgnoreCase(arg)) {
-				String permission = command.getPermissionNode();
+				String permission = subcommand.getPermissionNode();
 				if(permission != null && !Bukkit.getPlayer(uuid).hasPermission(permission)) continue;
 				tabCommands.addAll(Arrays.asList(subcommand.getArguments(uuid)));
 				return;
