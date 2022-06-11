@@ -14,6 +14,7 @@ C:\Users\matth\eclipse-workspace\MultiChat\src\main\java\Commands\Admin\AdminCom
 C:\Users\matth\eclipse-workspace\MultiChat\src\main\java\Interfaces\ParentCommand.java
 C:\Users\matth\eclipse-workspace\MultiChat\src\main\java\General\GeneralMethods.java
 C:\Users\matth\eclipse-workspace\MultiChat\src\main\java\Persistency\UserMapping.java
+C:\Users\matth\eclipse-workspace\MultiChat\src\main\java\Commands\Admin\CreateChannel.java
 C:\Users\matth\eclipse-workspace\MultiChat\src\main\java\Commands\Profanity.java
 C:\Users\matth\eclipse-workspace\MultiChat\src\main\java\Listeners\ChatListener.java
 C:\Users\matth\eclipse-workspace\MultiChat\src\main\java\Managers\FileManager.java

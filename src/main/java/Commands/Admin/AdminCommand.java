@@ -24,6 +24,7 @@ public class AdminCommand extends ParentCommand{
 	public AdminCommand(Main main) {
 		subcommands = new ArrayList<ParentCommand>(Arrays.asList(
 				new Reload(main),
+				new CreateChannel(main),
 				new SetChannelRadius(main),
 				new SetChannelWorld(main),
 				new SetDefaultChannel(main),

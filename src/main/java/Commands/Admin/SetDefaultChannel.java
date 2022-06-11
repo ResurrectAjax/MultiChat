@@ -63,7 +63,11 @@ public class SetDefaultChannel extends Channel{
 			player.sendMessage(GeneralMethods.getBadSyntaxMessage(getSyntax()));
 			return;
 		}
-		if(!checkChannel(player, args[2])) return;
+		if(!checkChannel(player, args[2])) {
+			FileConfiguration lang = main.getLanguage();
+			player.sendMessage(GeneralMethods.format(lang.getString("Command.Channel.NotExist.Message"), "%Channel%", args[2].toLowerCase()));
+			return;
+		}
 		
 		FileConfiguration config = main.getConfig(), lang = main.getLanguage();
 		if(ConfigManager.getDefaultChannel() != null) {

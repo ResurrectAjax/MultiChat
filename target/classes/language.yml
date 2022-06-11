@@ -8,9 +8,13 @@ Command:
       Message: '&bMultiChat &8: &eThat command doesn''t exist.'
     BadSyntax:
       Message: '&bMultiChat &8: &ePlease do %Syntax% instead.'
+    SpecialChars:
+      Message: '&bMultiChat &8: &ePlease don''t use special characters or numbers.'
     NoPermission:
       Message: '&bMultiChat &8: &eYou don''t have permission to execute this command.'
   Channel:
+    AlreadyExists:
+      Message: '&bMultiChat &8: &eThis Channel already exists.'
     NotExist:
       Message: '&bMultiChat &8: &eThis Channel doesn''t exist.'
     ChangedChannel:
@@ -21,6 +25,8 @@ Command:
     ToggleOff:
       Message: '&bMultiChat &8: &eYour profanity filter has been turned &c&lOff&e.'
   Admin:
+    CreateChannel:
+      Message: '&bMultiChat &8: &eThe channel &a&l%Channel%&e has been created.'
     SetChannelRadius:
       Message: '&bMultiChat &8: &eThe &a&l%Channel%&e channel''s radius has been set to &a&l%Radius%&e.'
     SetChannelWorld:

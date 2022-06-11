@@ -146,7 +146,7 @@ public class HelpCommand extends ParentCommand{
 			helpSize = (commandList.size() / nr);
 		}
 		
-		player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "MultiChat" + ChatColor.WHITE + " - " + ChatColor.YELLOW + command.getName());
+		player.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + main.getName() + ChatColor.WHITE + " - " + ChatColor.YELLOW + command.getName());
 		
 		for(int i = (page * nr)-nr; i < page * nr; i++) {
 			if(commandList.size() > i) player.sendMessage(commandList.get(i));	

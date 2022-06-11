@@ -89,11 +89,7 @@ public class Channel extends ChildCommand{
 	 * @param channel {@link String} to check
 	 * */
 	protected boolean checkChannel(Player player, String channel) {
-		FileConfiguration lang = main.getLanguage();
-		if(!Arrays.asList(getArguments(player.getUniqueId())).contains(channel.toLowerCase())) {
-			player.sendMessage(GeneralMethods.format(lang.getString("Command.Channel.NotExist.Message"), "%Channel%", channel.toLowerCase()));
-			return false;
-		}
+		if(!Arrays.asList(getArguments(player.getUniqueId())).contains(channel.toLowerCase())) return false;
 		return true;
 	}
 

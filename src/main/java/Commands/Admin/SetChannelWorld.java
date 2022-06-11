@@ -62,7 +62,11 @@ public class SetChannelWorld extends Channel{
 			player.sendMessage(GeneralMethods.getBadSyntaxMessage(getSyntax()));
 			return;
 		}
-		if(!checkChannel(player, args[2])) return;
+		if(!checkChannel(player, args[2])) {
+			FileConfiguration lang = main.getLanguage();
+			player.sendMessage(GeneralMethods.format(lang.getString("Command.Channel.NotExist.Message"), "%Channel%", args[2].toLowerCase()));
+			return;
+		}
 		
 		if(!args[3].equalsIgnoreCase("ALL") && !args[3].equalsIgnoreCase("OWN")) {
 			player.sendMessage(GeneralMethods.getBadSyntaxMessage(getSyntax()));

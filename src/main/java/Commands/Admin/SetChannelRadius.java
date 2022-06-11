@@ -56,7 +56,11 @@ public class SetChannelRadius extends Channel{
 			player.sendMessage(GeneralMethods.getBadSyntaxMessage(getSyntax()));
 			return;
 		}
-		if(!checkChannel(player, args[2])) return;
+		if(!checkChannel(player, args[2])) {
+			FileConfiguration lang = main.getLanguage();
+			player.sendMessage(GeneralMethods.format(lang.getString("Command.Channel.NotExist.Message"), "%Channel%", args[2].toLowerCase()));
+			return;
+		}
 		
 		if(!GeneralMethods.isInteger(args[3]) || Integer.parseInt(args[3]) < -1) {
 			player.sendMessage(GeneralMethods.getBadSyntaxMessage(getSyntax()));
